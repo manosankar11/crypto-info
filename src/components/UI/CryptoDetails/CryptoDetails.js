@@ -1,24 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import HTMLReactParser from 'html-react-parser';
 import { useParams } from 'react-router'
 import millify from 'millify'
 import { Col, Row, Typography, Select } from 'antd'
 import { ThunderboltOutlined, NumberOutlined, CheckOutlined, TrophyOutlined, MoneyCollectOutlined, DollarCircleOutlined, FundOutlined, ExclamationCircleOutlined, StopOutlined } from '@ant-design/icons'
-import { useGetCryptoDetailsQuery} from './services/cryptoApi'
-import Loader from './Loader';
-const { Title, Text } = Typography;
+import { useGetCryptoHistoryQuery, useGetCryptoDetailsQuery } from '../../services/cryptoApi'
+import Loader from '../../Loader'
+import LineChart from '../LineChart/LineChart';
+import './CryptoDetails.css'
 
+const { Title, Text } = Typography;
+const { Option } = Select;
 
 const CryptoDetails = () => {
   const { coinId } = useParams();
-  
+  const [timeperiod,setTimeperiod] = useState('7d')
   const { data, isFetching } = useGetCryptoDetailsQuery(coinId);
+  const { data: coinHistory } = useGetCryptoHistoryQuery({ coinId, timeperiod });
 
-  
   const cryptoDetails = data?.data?.coin;
-  if (isFetching) return <Loader/>
+  if (isFetching) return <Loader />
 
-
+  const time = ['3h', '24h', '7d', '30d', '1y', '3m', '3y', '5y'];
   const stats = [
     { title: 'Price to USD', value: `$ ${data?.data?.coin.price && millify(data?.data?.coin.price)}`, icon: <DollarCircleOutlined /> },
     { title: 'Rank', value: data?.data?.coin.rank, icon: <NumberOutlined /> },
@@ -46,7 +49,10 @@ const CryptoDetails = () => {
           ViewValue Statistics,market cap and supply.
         </p>
       </Col>
-   
+      <Select defaultValue="7d" className="select-timeperiod" placeholder="Select Timeperiod" onChange={(value)=> setTimeperiod(value)}>
+        {time.map((date) => <Option key={date}>{date}</Option>)}
+      </Select>
+      <LineChart coinHistory={coinHistory} currentPrice={millify(data?.data?.coin.price)} coinName={data?.data?.coin.name} />
       <Col className="stats-container">
         <Col className="coin-value-statistics">
           <Col className="coin-value-statistics-heading">
@@ -74,7 +80,7 @@ const CryptoDetails = () => {
           </Col>
           {genericStats.map(({ icon, title, value }) => (
             <Col className="coin-stats">
-              <Col>
+              <Col className="coin-stats-name">
                 <Text>{icon}</Text>
                 <Text>{title}</Text>
               </Col>
@@ -87,7 +93,7 @@ const CryptoDetails = () => {
         <Row className="coin-desc">
           <Title level={3} className="coin-details-heading">What is {data?.data?.coin.name}?</Title>
           {HTMLReactParser(data?.data?.coin.description)}
-        </Row> 
+        </Row>
         <Col className="coin-links">
           <Title level={3} className="coin-details-heading">{data?.data?.coin.name} Links</Title>
           {data?.data?.coin.links?.map((link) => (

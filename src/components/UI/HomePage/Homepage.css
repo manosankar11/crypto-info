@@ -1,0 +1,11 @@
+@media screen and (max-width: 500px){
+    .heading{
+        margin-top: 20px;
+    }
+}
+.home-heading-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+}

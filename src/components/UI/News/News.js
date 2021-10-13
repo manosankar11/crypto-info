@@ -1,18 +1,15 @@
 import React, { useState } from 'react'
 import { Select, Typography, Row, Col, Avatar, Card } from 'antd';
 import moment from 'moment'
+import { useGetCryptoNewsQuery } from '../../services/cryptoNewsApi';
+import { useGetCryptosQuery } from '../../services/cryptoApi';
+import Loader from '../../Loader'
+import './News.css'
 
-import { useGetCryptoNewsQuery } from './services/cryptoNewsApi';
-import { useGetCryptosQuery } from './services/cryptoApi';
-import Loader from './Loader';
 
 const demoImage = 'http://coinrevolution.com/wp-content/uploads/2020/06/cryptonews.jpg';
 const { Text, Title } = Typography;
 const { Option } = Select;
-
-
-
-
 const News = ({ simplified }) => {
     const [newsCategory, setNewsCategory] = useState('Cryptocurrency');
     const { data } = useGetCryptosQuery(100);

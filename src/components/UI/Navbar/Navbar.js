@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Button, Menu, Typography, Avatar } from 'antd'
 import { HomeOutlined, MoneyCollectOutlined, BulbOutlined, FundOutlined, MenuOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
-import icon from "../components/images/logo1.png"
-
+import icon from "../../images/logo1.png"
+import './Navbar.css'
 
 const Navbar = () => {
     const [activeMenu, setActionMenu] = useState(true);
